@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Storacha JS Demo – Live</title>
+  <style>body{font-family:sans-serif;padding:50px;background:#0d1117;color:#c9d1d9}</style>
+</head>
+<body>
+  <h1>Storacha JS Integration Demo (Live & Interactive)</h1>
+  <p>Upload any file → get CID + Gateway instantly</p>
+  <input type="file" id="file">
+  <pre id="out"></pre>
+
+  <script type="module">
+    import { create } from "https://cdn.jsdelivr.net/npm/@storacha/client@0";
+
+    document.getElementById("file").onchange = async e => {
+      const file = e.target.files[0];
+      const client = create();
+      const cid = await client.uploadFile(file);
+      const url = `https://${cid}.ipfs.storacha.network`;
+      document.getElementById("out").textContent = 
+`File uploaded successfully! 🎉
+
+CID: ${cid}
+Gateway: ${url}
+
+Open: ${url}`;
+    };
+  </script>
+</body>
+</html>
