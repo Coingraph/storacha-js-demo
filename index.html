@@ -2,31 +2,44 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Storacha JS Demo – Live</title>
-  <style>body{font-family:sans-serif;padding:50px;background:#0d1117;color:#c9d1d9}</style>
+  <title>Storacha JS Demo – Live & Working</title>
+  <style>
+    body {font-family: sans-serif; padding: 40px; background: #0d1117; color: #c9d1d9; line-height: 1.6;}
+    input {padding: 10px; font-size: 16px;}
+    pre {background: #161b22; padding: 15px; border-radius: 8px; margin-top: 20px;}
+  </style>
 </head>
 <body>
-  <h1>Storacha JS Integration Demo (Live & Interactive)</h1>
-  <p>Upload any file → get CID + Gateway instantly</p>
-  <input type="file" id="file">
-  <pre id="out"></pre>
+  <h1>Storacha JS Integration Demo (Live)</h1>
+  <p>اختر أي ملف أو صورة → انتظر ثواني → هيطلعلك CID و Gateway</p>
+  <input type="file" id="filepicker">
+  <pre id="result">النتيجة هتظهر هنا...</pre>
 
   <script type="module">
-    import { create } from "https://cdn.jsdelivr.net/npm/@storacha/client@0";
+    import { create } from "https://cdn.jsdelivr.net/npm/@storacha/network@latest";
 
-    document.getElementById("file").onchange = async e => {
+    document.getElementById("filepicker").addEventListener("change", async (e) => {
       const file = e.target.files[0];
-      const client = create();
-      const cid = await client.uploadFile(file);
-      const url = `https://${cid}.ipfs.storacha.network`;
-      document.getElementById("out").textContent = 
-`File uploaded successfully! 🎉
+      if (!file) return;
+
+      document.getElementById("result").textContent = "جاري الرفع... ⏳";
+
+      try {
+        const client = create();
+        const cid = await client.uploadFile(file);
+        const gateway = `https://${cid}.ipfs.storacha.network`;
+
+        document.getElementById("result").textContent = 
+`✅ تم الرفع بنجاح!
 
 CID: ${cid}
-Gateway: ${url}
+Gateway: ${gateway}
 
-Open: ${url}`;
-    };
+افتح الملف: ${gateway}`;
+      } catch (err) {
+        document.getElementById("result").textContent = "❌ خطأ: " + err.message;
+      }
+    });
   </script>
 </body>
 </html>
